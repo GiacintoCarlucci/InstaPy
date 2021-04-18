@@ -101,6 +101,7 @@ ENV/
 # Storage
 *.db
 logs/
+hashtags/
 
 # Editors
 .idea
