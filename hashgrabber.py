@@ -6,26 +6,16 @@ from datetime import date
 from collections import Counter
 from pprint import pprint
 
-def goToSaveFolder():
+def goToSaveFolder(username):
     if os.path.isdir('hashtags') is False:
         os.mkdir('hashtags')
     os.chdir('hashtags')
+    if os.path.isdir(username) is False:
+        os.mkdir(username)
+    os.chdir(username)
     if os.path.isdir('mostcommon') is False:
         os.mkdir('mostcommon')
     os.chdir('mostcommon')
-
-def parseArgs():
-    global PATH
-    global USER
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-u', help='user to search for logs')
-    args = parser.parse_args()
-    USER = args.u
-    if(USER != None):
-        PATH = './logs/' + args.u + '/general.log'
-    else:
-        PATH = './logs/' + os.listdir('./logs/')[0] + '/general.log'
-        USER = os.listdir('./logs/')[0]
 
 def extractHashtags(path):
     hashtags = []
@@ -43,20 +33,14 @@ def extractHashtags(path):
 def countHashtags(hashtags):
     return Counter(hashtags).most_common()[:100]
 
-def save(hashtags):
-    goToSaveFolder()
+def save(hashtags, username):
+    goToSaveFolder(username)
     filename = str(date.today())+'.json'
     with open(filename,'w') as jsonFile:
         json.dump(countHashtags(hashtags),jsonFile)
 
-
-
-USER = ''
-PATH = ''
-
-def tagsReport():
-    hashtags = [] 
-    parseArgs()
-    print("Analyzing " + USER  + "'s logs...")
-    hashtags = extractHashtags(PATH)
-    save(hashtags)
+def tagsReport(username, path):
+    hashtags = []
+    print("Analyzing " + username  + "'s logs...")
+    hashtags = extractHashtags(path)
+    save(hashtags,username)
